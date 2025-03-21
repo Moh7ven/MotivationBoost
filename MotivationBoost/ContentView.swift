@@ -8,6 +8,8 @@
 import SwiftUI
 import AVFoundation
 import AudioToolbox // Pour la vibration
+//import Lottie
+
 
 extension Color {
     static func random() -> Color {
@@ -24,6 +26,10 @@ struct ContentView: View {
     @State private var isPressed = false
     @State private var gradientColors = [Color.purple, Color.blue]
     @State private var rotationAngle : Double = 0
+    @State private var showConfetti = false
+    @State private var motivationCount = 0
+
+    
     
     var soundEffect : AVAudioPlayer?
     
@@ -51,6 +57,19 @@ struct ContentView: View {
         }
     }*/
     
+    /*if showConfetti {
+        LottieView(name: "confetti", loopMode: .playOnce)
+            .frame(width: 300, height: 300)
+            .offset(y: -50)
+            .transition(.scale)
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    showConfetti = false
+                }
+            }
+    }*/
+
+    
     var body: some View {
         ZStack{
             LinearGradient(gradient: Gradient(colors: gradientColors),
@@ -64,7 +83,9 @@ struct ContentView: View {
                     }
                 }
             
+            
             VStack {
+                
                 Text(message)
                     .font(.custom("Avenir", size: 24))
                     .fontWeight(.bold)
@@ -76,6 +97,13 @@ struct ContentView: View {
                     )
                     .animation(.easeInOut(duration: 0.5), value: rotationAngle)
                 
+                Text("Motivation Boosts : \(motivationCount)")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding(.top, 10)
+                    .scaleEffect(motivationCount > 0 ? 1.2 : 1)
+                    .animation(.spring(), value: motivationCount)
+                
                 Button(action: {
                     withAnimation(.easeInOut(duration: 0.5)){
                         message = motivations.randomElement()!
@@ -86,6 +114,9 @@ struct ContentView: View {
                     //Vibration
                     triggerVibration()
                     //playSound()
+                    // showConfetti = true
+                    motivationCount += 1
+
                 }) {
                     HStack {
                             Image(systemName: "bolt.fill") // Icône d'éclair
